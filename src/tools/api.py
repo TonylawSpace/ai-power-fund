@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+from futu import *
+
 import datetime
 import os
 import pandas as pd
@@ -25,6 +28,10 @@ from src.data.models import (
 # Global cache instance
 _cache = get_cache()
 
+# 获取环境变量
+load_dotenv()
+futu_api_host = os.getenv("FUTU_API_HOST")
+futu_api_port = int(os.getenv("FUTU_API_PORT", "11111"))  # 默认值11111
 
 def get_prices_origin(ticker: str, start_date: str, end_date: str) -> list[Price]:
     """Fetch price data from cache or API."""

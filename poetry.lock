@@ -802,6 +802,18 @@ files = [
 ]
 
 [[package]]
+name = "futu"
+version = "0.0.1"
+description = "Python package for doing science."
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "futu-0.0.1-py3-none-any.whl", hash = "sha256:d2b48c71c304d540045bad038e9a42797184dadb25da2c4ed9ebe597c392889b"},
+    {file = "futu-0.0.1.tar.gz", hash = "sha256:728d586ec05e135b12ab65a24a698214e49899e68833ab648fd899ba13248b07"},
+]
+
+[[package]]
 name = "google-ai-generativelanguage"
 version = "0.6.18"
 description = "Google Ai Generativelanguage API client library"
@@ -3869,4 +3881,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "3f09c59fec44c94570bc50612b1c3f3cb82339f449e54b3e2c89eae3229e8f54"
+content-hash = "1ca82bebc80d048b4cd535ac5e7957492a95cbc10e2729a566369106303dbbf3"
