@@ -75,6 +75,15 @@ yfinance 港股接口
 
 
 
+## 安装 FUTU API
+
+```
+poetry add futu
+poetry add futu-api 
+```
+
+必须安装这两个组件才能使用FUTU API
+
 #### 安装 TA-Lib（可选）
 
 `TA-Lib`（Technical Analysis Library）是一个用于金融市场技术分析的开源库。它提供了一系列强大的工具和指标，帮助分析和预测市场趋势。
