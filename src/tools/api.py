@@ -59,6 +59,7 @@ def get_prices(ticker: str, start_date: str, end_date: str) -> list[Price]:
         return [Price(**price) for price in cached_data]
 
     stock_df = ak.stock_hk_daily(symbol=ticker, start_date=start_date.replace("-", ""), end_date=end_date.replace("-", ""))
+
     prices = [
         Price(time=row["date"], open=row["open"], close=row["close"], high=row["high"], low=row["low"], volume=row["volume"])
         for _, row in stock_df.iterrows()
