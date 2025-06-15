@@ -29,16 +29,39 @@ load_dotenv()
 init(autoreset=True)
 
 
+# 测试富途财务数据获取
+def test_futu_financials():
+    print("测试富途财务数据接口...")
 
-if __name__ == "__main__":
-
-    # get_financial_metrics
+    # 测试腾讯控股
+    print("\n获取腾讯控股(00700.HK)财务数据:")
     tencent_metrics = get_financial_metrics("00700.HK")
-    for metric in tencent_metrics:
-        print(f"{metric.report_period}: 市盈率={metric.price_to_earnings_ratio}, ROE={metric.return_on_equity}")
+
+    if tencent_metrics:
+        latest = tencent_metrics[0]
+        print(f"最新报告期: {latest.report_period}")
+        print(f"市盈率: {latest.price_to_earnings_ratio}")
+        print(f"市净率: {latest.price_to_book_ratio}")
+        print(f"ROE: {latest.return_on_equity}%")
+        print(f"股息率: {latest.dividend_yield}%")
+    else:
+        print("获取腾讯财务数据失败")
 
     # 测试美团
+    print("\n获取美团(03690.HK)财务数据:")
     meituan_metrics = get_financial_metrics("03690.HK")
-    for metric in meituan_metrics:
-        print(f"{metric.report_period}: 营收增长={metric.revenue_growth}%")
+
+    if meituan_metrics:
+        latest = meituan_metrics[0]
+        print(f"最新报告期: {latest.report_period}")
+        print(f"营收增长率: {latest.revenue_growth}%")
+        print(f"毛利率: {latest.gross_margin}%")
+    else:
+        print("获取美团财务数据失败")
+
+
+if __name__ == "__main__":
+    test_futu_financials()
+
+
 
