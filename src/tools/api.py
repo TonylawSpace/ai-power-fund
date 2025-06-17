@@ -49,7 +49,7 @@ FUTU_OPEND_PORT = int(os.getenv("FUTU_OPEND_PORT", "11111"))  # 默认值11111
 FUTU_MARKET = TrdMarket.HK  # 港股市场
 
 
-# 修改后代码（AKShare适配）
+# yfinance 获取估计
 def get_prices(ticker: str, start_date: str, end_date: str) -> list[Price]:
     # Create a cache key that includes all parameters to ensure exact matches
     cache_key = f"{ticker}_{start_date}_{end_date}"
@@ -73,7 +73,7 @@ def get_prices(ticker: str, start_date: str, end_date: str) -> list[Price]:
 
 def get_financial_metrics(ticker: str) -> list[FinancialMetrics]:
     """
-    使用富途API获取港股财务指标
+    使用富途API获取实时估值，yfinance获取财务指标
 
     参数:
         ticker: 港股代码 (格式: "00700.HK" 或 "00700")
@@ -84,131 +84,129 @@ def get_financial_metrics(ticker: str) -> list[FinancialMetrics]:
     # 标准化股票代码格式为富途要求格式: "HK.00700"
     if not ticker.startswith("HK."):
         if ticker.endswith(".HK"):
-            ticker = f"HK.{ticker.split('.')[0]}"
+            ticker_futu = f"HK.{ticker.split('.')[0]}"
+            ticker_yf = ticker  # 保持 "00700.HK" 格式
         else:
-            ticker = f"HK.{ticker}"
+            ticker_futu = f"HK.{ticker}"
+            ticker_yf = f"{ticker.lstrip('0')}.HK"  # 转换为 yfinance 格式 (如 "700.HK")
+    else:
+        ticker_futu = ticker
+        # 从 "HK.00700" 转换为 "700.HK"
+        ticker_yf = f"{ticker.split('.')[1].lstrip('0')}.HK"
 
     metrics_list = []
     quote_ctx = OpenQuoteContext(host=FUTU_OPEND_HOST, port=FUTU_OPEND_PORT)
 
     try:
-        # ==================== 1. 获取基本信息和实时估值 ====================
+        # ==================== 1. 使用富途API获取实时估值 ====================
         # 获取市场快照
-        ret, snapshot = quote_ctx.get_market_snapshot([ticker])
+        ret, snapshot = quote_ctx.get_market_snapshot([ticker_futu])
         if ret != RET_OK:
             print(f"获取市场快照失败: {snapshot}")
             return []
         snapshot_data = snapshot.iloc[0] if not snapshot.empty else {}
 
-        # 获取股票基本信息 - 使用正确的代码格式
-        ret, static_info = quote_ctx.get_stock_basicinfo(code_list=[ticker])
+        # 获取股票基本信息
+        ret, static_info = quote_ctx.get_stock_basicinfo(
+            market=FUTU_MARKET,
+            stock_type=SecurityType.STOCK,
+            code_list=[ticker_futu]
+        )
         if ret != RET_OK:
             print(f"获取基本信息失败: {static_info}")
             return []
         static_data = static_info.iloc[0] if not static_info.empty else {}
 
-        # ==================== 2. 获取财务报告数据 ====================
-        # 获取年报数据
-        ret, annual_reports = quote_ctx.get_financial_info(
-            stock=ticker,
-            financial_type=FinaType.ANNUAL,
-            start=0,
-            num=5
-        )
+        # ==================== 2. 使用yfinance获取财务数据  test ticker_yf=00700.HK ====================
+        stock = yf.Ticker(ticker_yf)
 
-        # 获取季报数据
-        ret, quarterly_reports = quote_ctx.get_financial_info(
-            stock=ticker,
-            financial_type=FinaType.QUARTER_1,
-            start=0,
-            num=8
-        )
+        # 获取财务报表 ##=================================================================================
+        balance_sheet = stock.balance_sheet
+        income_stmt = stock.income_stmt
+        cash_flow = stock.cash_flow
 
-        # 合并报告数据
-        all_reports = []
-        if annual_reports is not None:
-            all_reports.extend(annual_reports.values())
-        if quarterly_reports is not None:
-            all_reports.extend(quarterly_reports.values())
+        # 如果没有财务数据，直接返回空列表
+        if balance_sheet.empty or income_stmt.empty or cash_flow.empty:
+            print(f"api func::yf.Ticker无法获取{ticker_yf}的财务数据")
+            return []
 
-        # ==================== 3. 处理财务报告并计算指标 ====================
-        for report in all_reports:
-            # 确定报告类型
-            report_type = "annual" if report['financial_type'] == FinancialInfoType.ANNUAL_REPORT else "quarterly"
+        # 获取最近的5个报告期（年度报告）
+        periods = income_stmt.columns[:5]
+
+        for period in periods:
+            # 从财务报表中提取数据
+            total_revenue = income_stmt.loc['Total Revenue', period] if 'Total Revenue' in income_stmt.index else None
+            gross_profit = income_stmt.loc['Gross Profit', period] if 'Gross Profit' in income_stmt.index else None
+            net_income = income_stmt.loc['Net Income', period] if 'Net Income' in income_stmt.index else None
+            total_assets = balance_sheet.loc['Total Assets', period] if 'Total Assets' in balance_sheet.index else None
+            total_liabilities = balance_sheet.loc[
+                'Total Liabilities Net Minority Interest', period] if 'Total Liabilities Net Minority Interest' in balance_sheet.index else None
+            total_equity = balance_sheet.loc[
+                'Total Equity Gross Minority Interest', period] if 'Total Equity Gross Minority Interest' in balance_sheet.index else None
+            current_assets = balance_sheet.loc[
+                'Current Assets', period] if 'Current Assets' in balance_sheet.index else None
+            current_liabilities = balance_sheet.loc[
+                'Current Liabilities', period] if 'Current Liabilities' in balance_sheet.index else None
+            inventory = balance_sheet.loc['Inventory', period] if 'Inventory' in balance_sheet.index else None
+            free_cash_flow = cash_flow.loc['Free Cash Flow', period] if 'Free Cash Flow' in cash_flow.index else None
+
+            # 计算财务比率
+            gross_margin = (gross_profit / total_revenue) * 100 if gross_profit and total_revenue else None
+            net_margin = (net_income / total_revenue) * 100 if net_income and total_revenue else None
+            roe = (net_income / total_equity) * 100 if net_income and total_equity else None
+            roa = (net_income / total_assets) * 100 if net_income and total_assets else None
+            current_ratio = current_assets / current_liabilities if current_assets and current_liabilities else None
+            quick_ratio = (
+                                      current_assets - inventory) / current_liabilities if current_assets and inventory and current_liabilities else None
+            debt_to_equity = total_liabilities / total_equity if total_liabilities and total_equity else None
+            debt_to_assets = total_liabilities / total_assets if total_liabilities and total_assets else None
 
             # 创建财务指标对象
             metric = FinancialMetrics(
-                ticker=ticker,
-                report_period=report['report_date'],
-                period=report_type,
+                ticker=ticker_futu,
+                report_period=period.strftime("%Y-%m-%d"),
+                period="annual",
                 currency="HKD",
 
-                # 估值指标
+                # 估值指标（来自富途）
                 market_cap=snapshot_data.get('market_val', None),
-                enterprise_value=static_data.get('total_mv', None),
-                price_to_earnings_ratio=snapshot_data.get('pe', None),
-                price_to_book_ratio=snapshot_data.get('pb', None),
+                price_to_earnings_ratio=snapshot_data.get('pe_ratio', None),
+                price_to_book_ratio=snapshot_data.get('pb_ratio', None),
                 price_to_sales_ratio=snapshot_data.get('ps', None),
-                enterprise_value_to_ebitda_ratio=report.get('ev_ebitda', None),
-                enterprise_value_to_revenue_ratio=report.get('ev_revenue', None),
-                free_cash_flow_yield=report.get('free_cash_flow_yield', None),
-                peg_ratio=report.get('peg_ratio', None),
+                enterprise_value=static_data.get('total_mv', None),  # 没有此属性
+                dividend_yield=snapshot_data.get('dividend_ratio', None),
 
-                # 盈利能力指标
-                gross_margin=report.get('gross_profit_margin', None),
-                operating_margin=report.get('operating_profit_margin', None),
-                net_margin=report.get('net_profit_margin', None),
-                return_on_equity=report.get('roe', None),
-                return_on_assets=report.get('roa', None),
-                return_on_invested_capital=report.get('roic', None),
-
-                # 运营效率指标
-                asset_turnover=report.get('asset_turnover', None),
-                inventory_turnover=report.get('inventory_turnover', None),
-                receivables_turnover=report.get('receivables_turnover', None),
-                days_sales_outstanding=report.get('days_sales_outstanding', None),
-                operating_cycle=report.get('operating_cycle', None),
-                working_capital_turnover=report.get('working_capital_turnover', None),
+                # 盈利能力指标（来自yfinance）
+                gross_margin=gross_margin,
+                net_margin=net_margin,
+                return_on_equity=roe, # Return on Equity (ROE) 净收益 衡量公司对股东权益的回报能力
+                return_on_assets=roa,
 
                 # 流动性指标
-                current_ratio=report.get('current_ratio', None),
-                quick_ratio=report.get('quick_ratio', None),
-                cash_ratio=report.get('cash_ratio', None),
-                operating_cash_flow_ratio=report.get('operating_cash_flow_ratio', None),
+                current_ratio=current_ratio,
+                quick_ratio=quick_ratio,
 
                 # 杠杆指标
-                debt_to_equity=report.get('debt_to_equity_ratio', None),
-                debt_to_assets=report.get('debt_asset_ratio', None),
-                interest_coverage=report.get('interest_coverage_ratio', None),
+                debt_to_equity=debt_to_equity,
+                debt_to_assets=debt_to_assets,
 
-                # 增长指标
-                revenue_growth=report.get('revenue_growth', None),
-                earnings_growth=report.get('net_profit_growth', None),
-                book_value_growth=report.get('book_value_growth', None),
-                earnings_per_share_growth=report.get('eps_growth', None),
-                free_cash_flow_growth=report.get('free_cash_flow_growth', None),
-                operating_income_growth=report.get('operating_profit_growth', None),
-                ebitda_growth=report.get('ebitda_growth', None),
+                # 现金流指标
+                free_cash_flow=free_cash_flow,
 
-                # 分红与每股指标
-                payout_ratio=report.get('dividend_payout_ratio', None),
-                earnings_per_share=report.get('eps', None),
-                book_value_per_share=report.get('bps', None),
-                free_cash_flow_per_share=report.get('free_cash_flow_per_share', None),
-
-                # 港股特有指标
-                dividend_yield=snapshot_data.get('dividend_ratio', None)
+                # 每股指标
+                earnings_per_share=snapshot_data.get('eps', None),
+                book_value_per_share=snapshot_data.get('navps', None),
             )
 
             metrics_list.append(metric)
 
-        # 按报告日期排序 (最新在前)
+        # 按报告期倒序排列
         metrics_list.sort(key=lambda x: x.report_period, reverse=True)
 
         return metrics_list
 
     except Exception as e:
-        print(f"富途接口获取{ticker}财务数据失败: {str(e)}")
+        print(f"获取{ticker_futu}财务数据失败: {str(e)}")
         return []
     finally:
         # 确保关闭连接
@@ -252,12 +250,17 @@ def calculate_financial_ratios(report: pd.Series) -> dict[str, float]:
     return ratios
 
 
-def calculate_growth(current: float, previous: float) -> Optional[float]:
+def calculate_growth0(current: float, previous: float) -> Optional[float]:
     """计算增长率"""
     if previous == 0:
         return None
     return (current - previous) / previous * 100
 
+# 计算增长指标的函数
+def calculate_growth(current, previous):
+    if current is None or previous is None or previous == 0:
+        return None
+    return (current - previous) / previous * 100
 
 def get_ratio(numerator: float, denominator: float) -> Optional[float]:
     """安全计算比率"""

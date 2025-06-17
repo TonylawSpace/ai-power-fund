@@ -40,15 +40,6 @@ poetry add requests
 .env
 ```
 
-項目運行
-
-```
-# 在项目根目录运行（ai-hedge-fund/）
-poetry run python -m src.main --ticker AAPL,MSFT,NVDA
-# 分析单只股票
- poetry run python -m src.main --ticker AAPL 
-```
-
 #### **模型服务互补关系**
 
 | **场景**         | **推荐模型服务**    | **原因**                          |
@@ -145,9 +136,23 @@ sudo apt-get install libta-lib0-dev
 
 
 
-測試命令
+## 測試命令
 
 ```
+# 在项目根目录运行（ai-hedge-fund/）
+poetry run python -m src.main --ticker AAPL,MSFT,NVDA
+# 分析单只股票
+ poetry run python -m src.main --ticker AAPL
+ 
+# api test
+ poetry run python -m src.tools.main  --ticker 03690.HK
+```
+
+**TTM** 指的是 **Trailing Twelve Months**，即**过去十二个月**的财务数据。
 
 ```
+ttm_income_stmt = stock.ttm_income_stmt
+```
+
+
 

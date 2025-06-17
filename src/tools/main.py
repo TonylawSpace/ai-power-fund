@@ -44,6 +44,13 @@ def test_futu_financials():
         print(f"市净率: {latest.price_to_book_ratio}")
         print(f"ROE: {latest.return_on_equity}%")
         print(f"股息率: {latest.dividend_yield}%")
+        print(f"每股收益: {latest.earnings_per_share}")
+
+        # 打印所有可用指标
+        print("\n所有可用指标:")
+        for field, value in latest.dict().items():
+            if value is not None:
+                print(f"{field}: {value}")
     else:
         print("获取腾讯财务数据失败")
 
@@ -56,6 +63,7 @@ def test_futu_financials():
         print(f"最新报告期: {latest.report_period}")
         print(f"营收增长率: {latest.revenue_growth}%")
         print(f"毛利率: {latest.gross_margin}%")
+        print(f"自由现金流: {latest.free_cash_flow_per_share}")
     else:
         print("获取美团财务数据失败")
 
