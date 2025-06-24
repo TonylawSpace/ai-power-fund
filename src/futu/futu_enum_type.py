@@ -1,4 +1,5 @@
 from enum import Enum,IntEnum,auto
+from typing import Optional, Union
 
 """
 用法
@@ -224,7 +225,7 @@ class SecurityStatus(IntEnum):
         try:
             return cls(value)
         except ValueError:
-            return None
+            return NONE
 
 # 窝轮类型枚举类 WrtType
 class WrtType(IntEnum):

@@ -1,16 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Union
-
-# 假设前面定义的枚举类型已导入
-from .index_option_type import IndexOptionType
-from .option_area_type import OptionAreaType
-from .asset_class import AssetClass
-from .wrt_type import WrtType  # 假设WrtType已定义
-from .option_type import OptionType  # 假设OptionType已定义
-from .price_type import PriceType  # 假设PriceType已定义
-from .security_status import SecurityStatus  # 假设SecurityStatus已定义
-
+from src.futu.futu_enum_type import (
+ IndexOptionType    # 指数期权类别
+,OptionAreaType     # 期权类型（按行权时间）
+,AssetClass         # 资产类别
+,WrtType            # 窝轮类型
+,PriceType          # 窝轮价内/外
+,SecurityStatus     # 股票状态
+)
+  
 @dataclass
 class MarketSnapShotModel:
     """市场快照数据模型，表示金融产品的实时市场数据"""
