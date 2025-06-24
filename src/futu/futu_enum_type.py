@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum,IntEnum,auto
 
 """
 用法
@@ -150,3 +150,240 @@ class ExchType(Enum):
     CN_STIB = 16                 # 科创板
     SG_SGX = 17                  # 新交所
     JP_OSE = 18                  # 大阪交易所
+
+# 股票状态
+class SecurityStatus(IntEnum):
+    """
+    证券状态枚举类，包含各种证券交易状态及其相关信息
+    """
+    NONE = 0
+    NORMAL = 1
+    LISTING = 2
+    PURCHASING = 3
+    SUBSCRIBING = 4
+    BEFORE_DRAK_TRADE_OPENING = 5
+    DRAK_TRADING = 6
+    DRAK_TRADE_END = 7
+    TO_BE_OPEN = 8
+    SUSPENDED = 9
+    CALLED = 10
+    EXPIRED_LAST_TRADING_DATE = 11
+    EXPIRED = 12
+    DELISTED = 13
+    CHANGE_TO_TEMPORARY_CODE = 14
+    TEMPORARY_CODE_TRADE_END = 15
+    CHANGED_PLATE_TRADE_END = 16
+    CHANGED_CODE_TRADE_END = 17
+    RECOVERABLE_CIRCUIT_BREAKET = 18
+    UN_RECOVERABLE_CIRCUIT_BREAKER = 19
+    AFTER_COMBINATION = 20
+    AFTER_TRANSATION = 21
+
+    # 状态描述映射
+    _descriptions = {
+        NONE: "未知",
+        NORMAL: "正常状态",
+        LISTING: "待上市",
+        PURCHASING: "申购中",
+        SUBSCRIBING: "认购中",
+        BEFORE_DRAK_TRADE_OPENING: "暗盘开盘前",
+        DRAK_TRADING: "暗盘交易中",
+        DRAK_TRADE_END: "暗盘已收盘",
+        TO_BE_OPEN: "待开盘",
+        SUSPENDED: "停牌",
+        CALLED: "已收回",
+        EXPIRED_LAST_TRADING_DATE: "已过最后交易日",
+        EXPIRED: "已过期",
+        DELISTED: "已退市",
+        CHANGE_TO_TEMPORARY_CODE: "公司行动中，交易关闭，转至临时代码交易",
+        TEMPORARY_CODE_TRADE_END: "临时买卖结束，交易关闭",
+        CHANGED_PLATE_TRADE_END: "已转板，旧代码交易关闭",
+        CHANGED_CODE_TRADE_END: "已换代码，旧代码交易关闭",
+        RECOVERABLE_CIRCUIT_BREAKET: "可恢复性熔断",
+        UN_RECOVERABLE_CIRCUIT_BREAKER: "不可恢复性熔断",
+        AFTER_COMBINATION: "盘后撮合",
+        AFTER_TRANSATION: "盘后交易"
+    }
+
+    @property
+    def description(self) -> str:
+        """获取状态描述"""
+        return self._descriptions.get(self, "未知状态")
+
+    @classmethod
+    def from_value(cls, value: int) -> Optional["SecurityStatus"]:
+        """
+        根据值获取对应的证券状态
+
+        Args:
+            value: 状态整数值
+
+        Returns:
+            对应的 SecurityStatus 枚举值，如果未找到则返回 None
+        """
+        try:
+            return cls(value)
+        except ValueError:
+            return None
+
+# 窝轮类型枚举类 WrtType
+class WrtType(IntEnum):
+    """
+    窝轮类型枚举类，包含各种窝轮的类型及其相关信息
+    """
+    UNKNOWN = 0
+    CALL = 1
+    PUT = 2
+    BULL = 3
+    BEAR = 4
+    INLINE = 5
+
+    # 类型描述映射
+    _descriptions = {
+        UNKNOWN: "未知",
+        CALL: "认购窝轮",
+        PUT: "认沽窝轮",
+        BULL: "牛证",
+        BEAR: "熊证",
+        INLINE: "界内证"
+    }
+
+    @property
+    def description(self) -> str:
+        """获取窝轮类型的中文描述"""
+        return self._descriptions.get(self, "未知类型")
+
+    @classmethod
+    def from_value(cls, value: int) -> Optional["WrtType"]:
+        """
+        根据整数值获取对应的窝轮类型枚举值
+
+        Args:
+            value: 窝轮类型的整数值
+
+        Returns:
+            对应的 WrtType 枚举值，若未找到则返回 None
+        """
+        try:
+            return cls(value)
+        except ValueError:
+            return None
+
+# 窝轮价内/外状态枚举类
+class PriceType(IntEnum):
+    """
+    窝轮价内/外状态枚举类，用于表示窝轮价格与标的资产价格的相对关系
+    """
+    UNKNOW = 0
+    OUTSIDE = 1
+    WITH_IN = 2
+
+    # 状态描述映射（包含窝轮和界内证的不同含义）
+    _descriptions = {
+        UNKNOW: "未知",
+        OUTSIDE: {
+            "warrant": "价外",
+            "inline": "界外（界内证专用）"
+        },
+        WITH_IN: {
+            "warrant": "价内",
+            "inline": "界内（界内证专用）"
+        }
+    }
+
+    @property
+    def description(self) -> str:
+        """获取状态的中文描述（默认返回窝轮场景的描述）"""
+        return self._descriptions[self]["warrant"]
+
+    def get_description(self, wrt_type: str = "warrant") -> str:
+        """
+        获取指定窝轮类型的状态描述
+
+        Args:
+            wrt_type: 窝轮类型，可选 "warrant"（普通窝轮）或 "inline"（界内证）
+
+        Returns:
+            对应的中文描述，若类型不支持则返回默认描述
+        """
+        return self._descriptions[self].get(wrt_type, self.description)
+
+    @classmethod
+    def from_value(cls, value: int) -> Optional["PriceType"]:
+        """
+        根据整数值获取对应的价格状态枚举值
+
+        Args:
+            value: 价格状态的整数值
+
+        Returns:
+            对应的 PriceType 枚举值，若未找到则返回 None
+        """
+        try:
+            return cls(value)
+        except ValueError:
+            return None
+
+# 期权方向类型枚举类 OptionType
+class OptionType(IntEnum):
+    """
+    期权方向类型枚举类，用于表示期权的看涨/看跌属性及全量类型
+    """
+    ALL = 0
+    CALL = 1
+    PUT = 2
+
+    # 类型描述映射
+    _descriptions = {
+        ALL: "所有期权",
+        CALL: "看涨期权（赋予买入标的资产的权利）",
+        CALL: "看涨期权（赋予买入标的资产的权利）",  # 修正重复键（实际应确保唯一）
+        PUT: "看跌期权（赋予卖出标的资产的权利）"
+    }
+
+    @property
+    def description(self) -> str:
+        """获取期权类型的中文描述"""
+        return self._descriptions.get(self, "未知类型")
+
+    @classmethod
+    def from_value(cls, value: int) -> Optional["OptionType"]:
+        """
+        根据整数值获取对应的期权类型枚举值
+
+        Args:
+            value: 期权类型的整数值
+
+        Returns:
+            对应的 OptionType 枚举值，若未找到则返回 None
+        """
+        try:
+            return cls(value)
+        except ValueError:
+            return None
+
+# 指数期权类型 IndexOptionType
+class IndexOptionType(IntEnum):
+    """指数期权类型"""
+    NONE = 0  # 未知类型
+    NORMAL = 1  # 普通的指数期权
+    SMALL = 2  # 小型指数期权
+
+# 期权行权类型（按行权时间分类） OptionAreaType
+class OptionAreaType(IntEnum):
+    """期权行权类型（按行权时间分类）"""
+    NONE = 0  # 未知类型
+    AMERICAN = 1  # 美式期权：行权时间为到期日前任意时间
+    EUROPEAN = 2  # 欧式期权：行权时间为到期日当天
+    BERMUDA = 3  # 百慕大期权：行权时间为到期日前的一系列特定日期
+
+# 资产类别
+class AssetClass(IntEnum):
+    """资产类别"""
+    UNKNOW = 0  # 未知资产类别
+    STOCK = 1  # 股票
+    BOND = 2  # 债券
+    COMMODITY = 3  # 商品
+    CURRENCY_MARKET = 4  # 货币市场
+    FUTURE = 5  # 期货
+    SWAP = 6  # 掉期（互换）

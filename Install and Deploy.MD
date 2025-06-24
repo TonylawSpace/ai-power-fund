@@ -30,6 +30,12 @@
 poetry add requests
 ```
 
+### 查看当前虚拟环境：
+
+```
+ poetry env info
+```
+
 
 
 ## env 环境配置
@@ -63,6 +69,12 @@ akshare接口教程  https://akshare.akfamily.xyz/data/stock/stock.html
 测试美股 蔚来NIO  阿里吧吧BABA
 
 yfinance 港股接口
+
+
+
+## 上市公司公告
+
+资源 ： 上市公司公告接口 https://gugudata.com/status
 
 
 
@@ -108,8 +120,6 @@ sudo apt-get install build-essential
 sudo apt-get install libta-lib0-dev
 ```
 
-
-
 ## 改造的相关函数：
 
 #### **1. 重写数据获取函数（共8个关键函数）**
@@ -130,6 +140,32 @@ sudo apt-get install libta-lib0-dev
 安装最新版本 pip install akshare --upgrade  
 [notice] A new release of pip is available: 24.3.1 -> 25.1.1
 
+
+
+## **遗漏组件以及环境问题的处理办法**
+
+#### 1. 安装 `python-dotenv`
+
+```bash
+poetry add python-dotenv
+```
+
+#### 2. 修改  pyproject.toml 
+
+```
+python = "^3.9" 改为 python = "^3.13"
+```
+
+本机版本 Python 3.13.2
+
+#### 3. 重新激活虚拟环境
+
+```bash
+poetry shell
+```
+
+## 
+
 ## 前端
 
 **http://127.0.0.1:5173/**
@@ -140,7 +176,7 @@ sudo apt-get install libta-lib0-dev
 
 ```
 # 在项目根目录运行（ai-hedge-fund/）
-poetry run python -m src.main --ticker AAPL,MSFT,NVDA
+ poetry run python -m src.main --ticker AAPL,MSFT,NVDA
 # 分析单只股票
  poetry run python -m src.main --ticker AAPL
  

@@ -1,78 +1,112 @@
 # Financial Metrics 財務指標
 
+资产负债表数据源获取方式：
 
+- [x] 银雲科技 https://www.apispace.com/
+- [x] FUTU API 富途牛牛 https://openapi.futunn.com/futu-api-doc/intro/intro.html 
+- [x] 沧海数据 提供资产负债表、利润表以及现金流量表 https://tsanghi.com
+- [x] TaoBao.com 淘寶
 
-## class FinancialMetrics
+## Class FinancialMetrics
 
 ```
 class FinancialMetrics(BaseModel):
     """
     财务指标模型，包含公司财务分析常用的各项指标
     """
-    asset_turnover: float | None  # 1.资产周转率 = 营业收入/平均资产总额
+    asset_turnover: float | None  						# 1.资产周转率 = 营业收入/平均资产总额
     
-    book_value_growth: float |  None  # 2.账面价值增长率
-    book_value_per_share: float |  None  # 3.每股账面价值
+    book_value_growth: float |  None  					# 2.账面价值增长率
+    book_value_per_share: float |  None  				# 3.每股账面价值
     
-    cash_ratio: float |  None  # 4.现金比率
-    current_ratio: float |  None  # 5.流动比率
-    currency: str  # 6.货币单位
+    cash_ratio: float |  None  							# 4.现金比率
+    current_ratio: float |  None  						# 5.流动比率
+    currency: str  										# 6.货币单位
     
-    days_sales_outstanding: float |  None  # 7.应收账款周转天数
-    debt_to_assets: float |  None  # 8.资产负债率
-    debt_to_equity: float |  None  # 9.产权比率
-    dividend_yield: float |  None  # 10.股息率
+    days_sales_outstanding: float |  None  				# 7.应收账款周转天数
+    debt_to_assets: float |  None  						# 8.资产负债率
+    debt_to_equity: float |  None  						# 9.产权比率
+    dividend_yield: float |  None  						# 10.股息率
     
-    earnings_growth: float |  None  # 11.利润增长率
-    earnings_per_share: float |  None  # 12.每股收益(EPS)
-    earnings_per_share_growth: float |  None  # 13.每股收益增长率
-    ebitda_growth: float |  None  # 14.EBITDA增长率
-    enterprise_value: float |  None  # 15.企业价值
-    enterprise_value_to_ebitda_ratio: float | None  # 16.企业价值/EBITDA
-    enterprise_value_to_revenue_ratio: float |  None  # 17.企业价值/营收
+    earnings_growth: float |  None  					# 11.利润增长率
+    earnings_per_share: float |  None  					# 12.每股收益(EPS)
+    earnings_per_share_growth: float |  None  			# 13.每股收益增长率
+    ebitda_growth: float |  None  						# 14.EBITDA增长率
+    enterprise_value: float |  None  					# 15.企业价值
+    enterprise_value_to_ebitda_ratio: float | None  	# 16.企业价值/EBITDA
+    enterprise_value_to_revenue_ratio: float |  None  	# 17.企业价值/营收
     
-    free_cash_flow: float |  None  # 18.自由现金流
-    free_cash_flow_growth: float |  None  # 19.自由现金流增长率
-    free_cash_flow_per_share: float |  None  # 20.每股自由现金流
-    free_cash_flow_yield: float |  None  # 21.自由现金流收益率
-    gross_margin: float |  None  # 22.毛利率
+    free_cash_flow: float |  None  						# 18.自由现金流
+    free_cash_flow_growth: float |  None  				# 19.自由现金流增长率
+    free_cash_flow_per_share: float |  None  			# 20.每股自由现金流
+    free_cash_flow_yield: float |  None  				# 21.自由现金流收益率
+    gross_margin: float |  None  						# 22.毛利率
     
-    interest_coverage: float |  None  # 23.利息保障倍数
-    inventory_turnover: float |  None  # 24.存货周转率
+    interest_coverage: float |  None  					# 23.利息保障倍数
+    inventory_turnover: float |  None  					# 24.存货周转率
     
-    operating_cash_flow: float |  None  # 25.经营活动产生的现金流量
-    operating_cash_flow_ratio: float |  None  # 26.经营活动现金流比率
-    operating_cycle: float |  None  # 27.营业周期
-    operating_income_growth: float |  None  # 28.营业利润增长率
-    operating_margin: float |  None  # 29.营业利润率
+    operating_cash_flow: float |  None  				# 25.经营活动产生的现金流量
+    operating_cash_flow_ratio: float |  None  			# 26.经营活动现金流比率
+    operating_cycle: float |  None  					# 27.营业周期
+    operating_income_growth: float |  None  			# 28.营业利润增长率
+    operating_margin: float |  None  					# 29.营业利润率
     
-    payout_ratio: float |  None  # 30.股息支付率
-    peg_ratio: float |  None  # 31.市盈率相对盈利增长比率
-    period: str  # 32.周期
-    price_to_book_ratio: float |  None  # 33.市净率
-    price_to_earnings_ratio: float |  None  # 34.市盈率
-    price_to_sales_ratio: float |  None  # 35.市销率（Price-to-Sales Ratio，简称 P/S 或 PSR） 是评估企业估值的重要财务指标
-    quick_ratio: float |  None  # 36.速动比率
+    # payout_ratio: float |  None  						# 30.股息支付率 不是放在这个模型
+    peg_ratio: float |  None  							# 31.市盈率相对盈利增长比率
+    period: str  										# 32.周期
+    price_to_book_ratio: float |  None  				# 33.市净率
+    price_to_earnings_ratio: float |  None  			# 34.市盈率
+    price_to_sales_ratio: float |  None  				# 35.市销率（简称 P/S 或 PSR）评估企业估值的重要指标
+    quick_ratio: float |  None  						# 36.速动比率
     
-    receivables_turnover: float | None  # 37.应收账款周转率
-    report_period: str  # 38.报告期
-    revenue_growth: float | None  # 39.营收增长率
-    return_on_assets: float | None  # 40.总资产收益率(ROA)
-    return_on_equity: float | None  # 41.净资产收益率(ROE)
-    return_on_invested_capital: float | None  # 42.投入资本回报率(ROIC)
-    ticker: str  # 43.股票代码
+    receivables_turnover: float | None  				# 37.应收账款周转率
+    report_period: str  								# 38.报告期
+    revenue_growth: float | None  						# 39.营收增长率
+    return_on_assets: float | None  					# 40.总资产收益率(ROA)
+    return_on_equity: float | None  					# 41.净资产收益率(ROE)
+    return_on_invested_capital: float | None  			# 42.投入资本回报率(ROIC)
+    ticker: str  										# 43.股票代码
     
-    market_cap: float | None  # 46.市值
-    net_margin: float | None  # 47.净利润率
-    operating_cash_flow: float | None  # 48.经营活动现金流
+    market_cap: float | None  							# 44.市值
+    net_margin: float | None  							# 45.净利润率 
 
-    return_on_assets: float | None  # 49.资产回报率
-    return_on_equity: float | None  # 50.权益回报率
-    revenue_growth: float | None  # 51.营收增长率
+    return_on_assets: float | None  					# 46.资产回报率
+    return_on_equity: float | None  					# 47.权益回报率
+    revenue_growth: float | None  						# 48.营收增长率
     
-    working_capital_turnover: float | None  # 45.营运资本周转率
+    working_capital_turnover: float | None  			# 49.营运资本周转率
 
 ```
+
+## 年报未解决的指标
+
+```
+ 	earnings_growth: float |  None  					# 11.利润增长率
+    earnings_per_share: float |  None  					# 12.每股收益(EPS)
+    earnings_per_share_growth: float |  None  			# 13.每股收益增长率
+    ebitda_growth: float |  None  						# 14.EBITDA增长率
+    enterprise_value: float |  None  					# 15.企业价值
+    enterprise_value_to_ebitda_ratio: float | None  	# 16.企业价值/EBITDA
+    enterprise_value_to_revenue_ratio: float |  None  	# 17.企业价值/营收 
+    free_cash_flow_growth: float |  None  				# 19.自由现金流增长率 
+    free_cash_flow_per_share: float |  None  			# 20.每股自由现金流 
+    free_cash_flow_yield: float |  None  				# 21.自由现金流收益率 
+    operating_cash_flow: float |  None  				# 25.经营活动产生的现金流量
+    operating_cash_flow_ratio: float |  None  			# 26.经营活动现金流比率 
+    operating_cycle: float |  None  					# 27.营业周期 
+    operating_income_growth: float |  None  			# 28.营业利润增长率 
+    peg_ratio: float |  None  							# 31.市盈率相对盈利增长比率
+    period: str  										# 32.周期
+    price_to_book_ratio: float |  None  				# 33.市净率
+    price_to_earnings_ratio: float |  None  			# 34.市盈率
+    price_to_sales_ratio: float |  None  				# 35.市销率 市销率  
+    report_period: str  								# 38.报告期
+    revenue_growth: float | None  						# 39.营收增长率 
+    working_capital_turnover: float | None  			# 45.营运资本周转率 
+    net_margin: float | None  							# 47.净利润率
+```
+
+
 
 ## TurnOver Rate 周转率 
 
@@ -88,48 +122,509 @@ class FinancialMetrics(BaseModel):
 | **员工离职率**     | Employee Turnover Rate       | 离职员工数 / 平均员工数 × 100% | 人力资源稳定性分析           |
 | **固定资产周转率** | Fixed Asset Turnover         | 营业收入 / 平均固定资产净值    | 重资产行业（如制造业）效率评 |
 
+#### Asset Turnover 资产周转率
+
+"Asset Turnover"（资产周转率）是指公司在一定时期内利用其资产产生收入的效率。这个指标反映了公司资产的使用效率，通常用以下公式计算：
+
+##### 计算公式：
+
+$$
+$\text{资产周转率} = \frac{\text{总收入}}{\text{平均总资产}}$
+$$
+
+
+
+##### 主要含义：
+
+1. **效率评估**：资产周转率越高，说明公司能够更有效地利用其资产产生收入。
+2. **运营能力**：该指标可用于评估公司的运营能力和管理效率，帮助投资者了解公司在资源利用方面的表现。
+3. **行业比较**：资产周转率可以用于与同行业其他公司进行比较，以评估相对竞争力。
+
+##### 重要性：
+
+- **投资决策**：投资者通常关注资产周转率，以判断公司是否能够高效利用其资产。
+
+- **财务健康**：较高的资产周转率通常与较好的财务健康状况相关联。
+
+  
+
 ## ROE 净收益
 
 **Return on Equity (ROE)** 是一个重要的财务指标，用于衡量公司对股东权益的回报能力。它表示公司在一定时期内（通常为一年）从股东投资中获得的净收益。
 
-### 计算公式
+#### 计算公式
 
 $$
 $\text{ROE} = \frac{\text{净利润}}{\text{股东权益}} \times 100\%$
 $$
 
-### 含义
+#### 含义
 
 - **高 ROE**：通常表示公司有效地利用股东的投资来产生利润，可能意味着公司经营良好。
 - **低 ROE**：可能表明公司未能有效利用股东资金，或者面临盈利能力下降的问题。
 
-### 使用场景
+#### 使用场景
 
 - ROE 常被投资者用来比较不同公司的盈利效率，尤其是在同一行业内。
 - 它也可以帮助评估公司的财务健康状况和管理层的表现。
 
 
 
-## ROA 資產報酬率
+## ROA 資產回報率
 
 **Return on Assets (ROA)** 是一个衡量公司资产使用效率的财务指标。它表示公司在一定时期内（通常为一年）从其总资产中获得的净收益。
 
-### 计算公式
+#### 计算公式
 
 $$
 $\text{ROA} = \frac{\text{净利润}}{\text{总资产}} \times 100\% $
 $$
 
-### 含义
+#### 含义
 
 - **高 ROA**：表示公司有效地利用资产来产生利润，通常意味着公司的经营效率较高。
 - **低 ROA**：可能表明公司在资产使用上效率不足，或者存在盈利能力下降的问题。
 
-### 使用场景
+#### 使用场景
 
 - ROA 常被投资者用来评估公司的资产管理能力，尤其在比较不同公司的资产利用效率时。
 - 它可以帮助判断一家公司在其资产基础上创造收益的能力。
 
-### 注意事项
+#### 注意事项
 
 - ROA 可能受到公司资本结构和行业特性的影响，不同行业的 ROA 基准差异较大，因此在行业内比较更为有效。
+
+
+
+## Book Value Growth 账面价值增长
+
+是指公司账面价值的增长率。账面价值通常是**公司的总资产减去总负债**，反映了公司净资产的价值。
+
+#### 主要含义：
+
+1. **账面价值**：表示公司在财务报表上的净资产值，通常用于评估公司的财务健康状况。
+
+2. **增长率**：账面价值增长率通常以百分比表示，计算公式为：
+   $$
+   $\text{账面价值增长率} = \frac{\text{期末账面价值} - \text{期初账面价值}}{\text{期初账面价值}} \times 100\%$
+   $$
+   
+
+#### 重要性：
+
+- **财务健康**：稳定的账面价值增长通常表明公司财务状况良好，能够有效管理资产和负债。
+- **投资决策**：投资者常常关注这一指标，以评估公司的长期增长潜力和投资价值。
+- **比较分析**：可以用于与同行业其他公司的账面价值增长进行比较，帮助投资者做出更明智的投资决策。
+
+总之，账面价值增长是评估公司财务稳定性和增长潜力的重要指标。
+
+
+
+## Market Cap 市值
+
+**是指公司在股票市场上的总价值，通常通过以下公式计算**：
+$$
+$\text{市值} = \text{股价} \times \text{流通股数} $
+$$
+
+#### 主要含义：
+
+1. **公司规模**：市值通常用于衡量公司的规模和相对重要性。大市值公司通常被认为是成熟稳定的企业，而小市值公司可能具有更高的增长潜力，但也伴随更高的风险。
+2. **投资决策**：投资者常常根据市值来决定投资组合的配置。例如，许多基金会根据市值将公司分类为大盘股、中盘股和小盘股。
+3. **市场表现**：市值的变化可以反映市场对公司未来前景的看法，股价上涨通常会导致市值增加。
+
+#### 分类：
+
+- **大盘股**：市值通常在100亿美元以上。
+- **中盘股**：市值在20亿到100亿美元之间。
+- **小盘股**：市值在20亿美元以下。
+
+总之，市值是评估公司在市场上价值和影响力的重要指标。
+
+
+
+## Share Capital 股本 
+
+是指公司通过发行股票所筹集的资金总额。它通常反映了公司在成立时或后续增资时所获得的资本。
+
+#### 主要组成部分：
+
+1. **普通股**：公司发行的普通股股票，股东享有表决权和分红权。
+2. **优先股**：公司发行的优先股，股东通常在分红和资产清算时享有优先权，但通常没有表决权。
+
+#### 重要性：
+
+- **资本来源**：股本是公司运营和扩展的重要资金来源。
+- **股东权益**：股本是股东在公司中的权益基础，反映了他们对公司的所有权。
+- **财务健康**：股本的变化可以反映公司的融资策略和财务健康状况。
+
+股本的计算通常基于以下公式：
+$$
+$\text{股本} = \text{每股面值} \times \text{发行的股票数量}$
+$$
+总之，股本是公司资本结构的关键部分，影响公司的运营和投资决策。
+
+
+
+## Market Capitalization 市值
+
+- **定义**：公司在股票市场上的总价值。
+- **计算**：市值 = 当前股价 × 流通股数。
+- **代表**：反映市场对公司价值的评估，受股价波动影响。
+
+#### 主要区别
+
+- **时间点**：股本是公司成立或增资时的固定金额，而市值是动态的，随股价变化而变化。
+- **含义**：股本主要关注公司内部资本结构，而市值则是外部市场对公司价值的看法。
+
+因此，虽然两者都涉及股票，但它们的计算方式和意义是不同的。
+
+
+
+## Earnings Growth 收益增长
+
+"Earnings Growth"（收益增长）是指公司净收益（利润）在一定时期内的增长率，通常用百分比表示。这个指标反映了公司盈利能力的变化和增长潜力。
+
+#### 主要含义：
+
+1. **盈利能力**：收益增长是评估公司盈利能力的重要指标，持续增长通常表明公司财务健康。
+2. **投资吸引力**：投资者通常关注收益增长，以判断公司是否值得投资。高收益增长率可能吸引更多投资。
+3. **比较分析**：可以与同行业其他公司的收益增长进行比较，以评估公司的相对表现。
+
+#### 计算方法：
+
+收益增长率的计算公式为：
+$$
+$\text{收益增长率} = \frac{\text{期末收益} - \text{期初收益}}{\text{期初收益}} \times 100\%$
+$$
+
+#### 重要性：
+
+- **长期表现**：收益增长是评估公司长期表现和增长潜力的重要因素。
+- **股价影响**：通常，收益增长预期会推动股价上涨。
+
+总之，收益增长是投资决策和公司评估中一个关键的财务指标。
+
+
+
+## Earnings Per Share (EPS) 每股收益
+
+**Earnings Per Share (EPS)**（每股收益）是衡量公司盈利能力的一个重要财务指标，表示每一股普通股所分配的净利润。EPS 是评估公司财务表现和投资价值的关键参考。
+
+#### 计算公式：
+
+$$
+$\text{EPS} = \frac{\text{净利润} - \text{优先股股息}}{\text{流通在外普通股总数}}$
+$$
+
+
+
+#### 主要组成部分：
+
+- **净利润**：公司在扣除所有费用和税项后的总利润。
+- **优先股股息**：如果公司发行了优先股，则需从净利润中扣除这些股息。
+- **流通在外普通股总数**：公司发行的普通股数量，通常指在市场上交易的股份。
+
+#### 重要性：
+
+1. **盈利能力**：EPS 是评估公司盈利能力的重要指标，较高的 EPS 通常表明公司盈利能力强。
+2. **投资决策**：投资者常用 EPS 来判断公司的投资价值，并与同行业其他公司进行比较。
+3. **股东回报**：EPS 可以影响公司股价，通常较高的 EPS 预示着更好的股东回报。
+
+#### 结论：
+
+每股收益是衡量公司盈利能力和股东回报的重要指标，广泛用于财务分析和投资决策中。
+
+
+
+## EPS Growth 每股收益增长
+
+**Earnings Per Share Growth (EPS Growth)**（每股收益增长）是衡量公司每股收益增长率的指标，反映了公司盈利能力的变化趋势。这个指标对于投资者评估公司的成长潜力非常重要。
+
+#### 计算公式：
+
+$$
+$\text{EPS增长率} = \frac{\text{当前期EPS} - \text{前期EPS}}{\text{前期EPS}} \times 100\%$
+$$
+
+
+
+#### 主要组成部分：
+
+- **当前期EPS**：最新财务报告中公布的每股收益。
+- **前期EPS**：上一个财务报告期间的每股收益。
+
+#### 重要性：
+
+1. **成长评估**：EPS增长率帮助投资者评估公司的增长能力，持续的正增长通常表明公司经营良好。
+2. **投资决策**：投资者常用此指标预测未来的财务表现，并与同行业公司的增长率进行比较。
+3. **股价影响**：较高的EPS增长率通常会推动股价上涨，反映市场对公司未来盈利能力的乐观预期。
+
+#### 结论：
+
+每股收益增长是评估公司盈利增长潜力的重要指标，帮助投资者做出明智的投资决策。
+
+
+
+## EBITDA Growth
+
+**EBITDA，全称是息税折旧摊销前利润（Earnings Before Interest, Taxes, Depreciation and Amortization）**，是一个用来衡量公司盈利能力的财务指标。它代表公司在扣除利息、税项、折旧和摊销之前的利润，消除了不同公司在融资成本、税收政策和资产折旧政策上的差异，从而更清晰地反映公司核心业务的盈利能力。﻿
+
+#### 纯利增长 與 EBITDA Growth 區別
+
+**EBITDA Growth**：
+
+- 更适合用于评估公司的运营表现和现金流生成能力，尤其对资本密集型行业更为有效。
+
+**纯利增长**：
+
+- 更全面，适合评估公司的整体盈利能力和财务健康。
+
+  
+
+**EBITDA Growth**（息税折旧及摊销前利润增长）是衡量公司息税折旧摊销前利润（EBITDA）增长率的指标，反映了公司运营盈利能力的变化趋势。
+
+#### 计算公式：
+
+$$
+$\text{EBITDA增长率} = \frac{\text{当前期EBITDA} - \text{前期EBITDA}}{\text{前期EBITDA}} \times 100\%$
+$$
+
+#### 主要组成部分：
+
+- **当前期EBITDA**：最新财务报告中的息税折旧及摊销前利润。
+- **前期EBITDA**：上一个财务报告期间的息税折旧及摊销前利润。
+
+#### 重要性：
+
+1. **运营表现**：EBITDA增长率帮助投资者评估公司的运营表现，持续增长通常表明公司业务强劲。
+2. **现金流表现**：EBITDA 是评估公司现金流生成能力的重要指标，增长率反映了未来盈利潜力。
+3. **投资决策**：投资者使用此指标与同行业公司进行比较，判断公司的相对价值。
+
+#### 结论：
+
+EBITDA增长是评估公司财务健康和运营效率的重要指标，帮助投资者了解公司的盈利增长潜力。
+
+
+
+## Net Assets 净资产
+
+**净资产**（Net Assets）是指公司总资产减去总负债后的余额，反映了股东在公司中的权益。它是衡量公司财务健康和整体价值的重要指标。
+
+#### 计算公式：
+
+$$
+$\text{净资产} = \text{总资产} - \text{总负债}$
+$$
+
+#### 主要组成部分：
+
+1. **总资产**：公司拥有的所有资产，包括现金、应收账款、存货、固定资产等。
+2. **总负债**：公司承担的所有债务，包括应付账款、贷款、长期债务等。
+
+#### 重要性：
+
+1. **股东权益**：净资产代表了股东对公司的所有权，是股东权益的基础。
+2. **财务健康**：净资产的变化可以反映公司的财务状况，持续增长通常表明公司经营良好。
+3. **投资决策**：投资者可以根据净资产评估公司的价值，作为投资决策的依据。
+
+#### 结论：
+
+净资产是企业财务报表中的关键指标，有助于评估公司的财务稳定性和长期发展潜力。
+
+
+
+## Quick Ratio 速动比率
+
+**Quick Ratio**（速动比率）是用于衡量公司短期偿债能力的财务指标。它反映了公司在不依赖存货的情况下，能够用流动资产偿还流动负债的能力。
+
+#### 计算公式：
+
+$$
+$\text{速动比率} = \frac{\text{流动资产} - \text{存货}}{\text{流动负债}}$
+$$
+
+#### 主要组成部分：
+
+- **流动资产**：包括现金、应收账款、短期投资等可迅速变现的资产。
+- **存货**：在速动比率计算中，通常不包括存货，因为存货变现可能需要时间。
+- **流动负债**：公司需在一年内偿还的债务，如应付账款、短期贷款等。
+
+#### 重要性：
+
+1. **偿债能力**：速动比率越高，表明公司在短期内偿还流动负债的能力越强，财务健康状况更好。
+2. **风险评估**：低速动比率可能表明公司流动性不足，面临财务风险。
+3. **行业比较**：可以用来与同行业公司进行比较，评估公司的财务稳健性。
+
+#### 结论：
+
+速动比率是评估公司短期财务健康的重要指标，帮助投资者和管理层了解公司的流动性状况。
+
+
+
+## Deferred Tax Assets 递延税项资产
+
+**Deferred Tax Assets**（递延税项资产）是指由于可抵扣暂时性差异或可利用的税收损失而形成的资产。这些资产代表了公司未来可能减少税负的权益。
+
+#### 主要组成部分：
+
+1. **可抵扣暂时性差异**：当公司会计利润高于税务利润时，形成的递延税项资产。例如，如果公司在会计上确认的费用在税务上尚未扣除。
+2. **税收损失**：如果公司在某一年度出现亏损，可能允许在未来的盈利年度抵扣这些损失，从而形成递延税项资产。
+
+#### 重要性：
+
+1. **税务规划**：递延税项资产可以帮助公司进行有效的税务规划，优化未来的税务支出。
+2. **财务报告**：在财务报表中反映递延税项资产，可以提供有关公司未来税务负担的透明度，有助于投资者理解公司的财务状况。
+3. **风险评估**：如果公司面临持续的亏损，递延税项资产可能无法实现，可能会对公司的财务健康构成风险。
+
+#### 结论4：
+
+递延税项资产是企业财务报表中的重要组成部分，有助于评估公司的税务状况和未来盈利能力。
+
+
+
+## EV to Revenue Ratio 企业价值与收入比率
+
+**Enterprise Value to Revenue Ratio**（企业价值与收入比率，简称 EV/Revenue Ratio）是用于评估公司价值相对于其收入的一个财务指标。这个比率有助于投资者了解公司在收入基础上的估值。
+
+### 计算公式：
+
+$$
+$\text{EV/Revenue Ratio} = \frac{\text{企业价值 (EV)}}{\text{年度收入}}$
+$$
+
+
+
+#### 主要组成部分：
+
+- **企业价值 (EV)**：企业价值是公司市场价值的综合表示，计算公式为：
+  $$
+  $\text{EV} = \text{市值} + \text{总负债} - \text{现金及现金等价物}$
+  $$
+
+- **年度收入**：公司在一定时期内（通常为一年）的总收入。
+
+#### 重要性：
+
+1. **估值工具**：EV/Revenue Ratio 是一种相对估值工具，常用于比较同行业公司的估值水平。
+2. **无利润公司评估**：对于尚未盈利或利润波动较大的公司，EV/Revenue Ratio 是一个更合适的评估指标。
+3. **投资决策**：投资者可以通过该比率判断公司是否被高估或低估，帮助做出投资决策。
+
+#### 结论：
+
+企业价值与收入比率是评估公司相对价值的重要指标，尤其在分析快速增长或尚未盈利的公司时，具有重要的参考意义。
+
+
+
+## Net Cash Operating 经营活动净现金流
+
+**Net Cash from Operating Activities**（经营活动净现金流）是指公司在特定时期内通过其核心业务活动所产生的现金流量。这个指标反映了公司主营业务的现金生成能力。
+
+#### 计算公式：
+
+经营活动净现金流通常从现金流量表中提取，计算方式为：
+
+$\text{经营活动净现金流} = \text{现金流入} - \text{现金流出}$
+
+#### 主要组成部分：
+
+1. **现金流入**：来自销售商品或提供服务所获得的现金收入。
+2. **现金流出**：与运营相关的支出，包括支付给供应商、工资、租金和其他日常运营费用。
+
+#### 重要性：
+
+1. **财务健康**：经营活动净现金流是评估公司财务健康的关键指标，持续的正现金流表明公司能够自给自足。
+2. **投资决策**：投资者关注这一指标，以判断公司是否能够通过自身运营产生足够的现金来支持扩展或偿还债务。
+3. **业务评估**：该指标有助于分析公司的运营效率和盈利能力。
+
+#### 结论：
+
+经营活动净现金流是衡量企业经营绩效的重要财务指标，反映了公司从核心业务中获得现金的能力。
+
+
+
+## Return on Invested Capital 资本回报率
+
+**Return on Invested Capital (ROIC)**（投资资本回报率）是衡量公司利用投资资本产生利润的能力的财务指标。它反映了公司在使用资本方面的效率。
+
+#### 计算公式：
+
+$$
+$\text{ROIC} = \frac{\text{净经营利润}}{\text{投资资本}}$
+$$
+
+
+
+- **净经营利润（NOPAT）**：通常为税后经营利润，可以通过营业利润减去所得税计算。
+- **投资资本**：公司用于运营的总资本，通常包括股东权益和负债减去非经营性资产。
+
+#### 主要意义：
+
+1. **盈利能力**：ROIC 是评估公司盈利能力的重要指标，较高的 ROIC 表明公司能够有效利用资本生成利润。
+2. **投资决策**：投资者可以用 ROIC 来比较不同公司的财务表现，帮助判断其投资价值。
+3. **绩效评估**：公司管理层可以利用 ROIC 来评估投资项目的有效性和整体运营效率。
+
+#### 重要性：
+
+- **资本成本比较**：ROIC 高于资本成本时，表明公司在创造价值，反之则可能损害股东价值。
+- **长期增长**：持续的高 ROIC 通常与公司的长期增长潜力相关联。
+
+#### 结论：
+
+投资资本回报率是评估公司运营效率和财务健康的重要指标，帮助投资者和管理层了解公司在资本利用上的表现。
+
+
+
+## Payout Ratio 派息比率
+
+派息比率（Payout Ratio）是指公司分配给股东的股息占其净利润的比例。
+
+#### 计算公式如下：
+
+```
+派息比率 = 每股股息 / 每股收益
+```
+
+或者：
+
+```
+派息比率 = 股息总额 / 净利润
+```
+
+#### 主要意义：
+
+1. **股东回报**：反映公司对股东的回报程度。
+2. **可持续性**：高派息比率可能表示公司在分配利润，但也可能影响其再投资和未来增长。
+3. **投资分析**：投资者常用派息比率评估公司的财务健康和盈利能力。
+
+一般来说，派息比率在30%-60%之间被认为是稳健的，但具体数值还需结合行业特性来分析。
+
+
+
+## Sharpe Ratio 夏普比率
+
+**Sharpe Ratio**（夏普比率）是用于衡量投资回报相对于其风险的一个重要财务指标。它帮助投资者评估投资的风险调整后收益。
+
+#### 计算公式：
+
+$$
+$\text{Sharpe Ratio} = \frac{\text{投资回报率} - \text{无风险利率}}{\text{投资的标准差}}$
+$$
+
+
+
+#### 主要组成部分：
+
+- **投资回报率**：投资的平均收益率。
+- **无风险利率**：通常使用国库券等低风险投资的收益率作为基准。
+- **投资的标准差**：衡量投资回报波动性的指标，反映投资风险。
+
+#### 重要性：
+
+1. **风险调整收益**：Sharpe Ratio 提供了一个风险调整后的收益度量，帮助投资者了解每单位风险所获得的额外回报。
+2. **投资比较**：可以用来比较不同投资或投资组合的表现，较高的 Sharpe Ratio 表明更好的风险调整后收益。
+3. **投资决策**：帮助投资者评估是否值得承担额外风险以获得更高的回报。
+
+#### 结论：
+
+夏普比率是评估投资表现的重要工具，尤其在风险管理和资产配置方面，帮助投资者做出更明智的决策。
