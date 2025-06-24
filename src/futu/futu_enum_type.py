@@ -202,30 +202,31 @@ class SecurityStatus(IntEnum):
             return None
 
 # 定义状态描述映射
-SecurityStatus._descriptions = {
-    SecurityStatus.NONE: "未知",
-    SecurityStatus.NORMAL: "正常状态",
-    SecurityStatus.LISTING: "待上市",
-    SecurityStatus.PURCHASING: "申购中",
-    SecurityStatus.SUBSCRIBING: "认购中",
-    SecurityStatus.BEFORE_DRAK_TRADE_OPENING: "暗盘开盘前",
-    SecurityStatus.DRAK_TRADING: "暗盘交易中",
-    SecurityStatus.DRAK_TRADE_END: "暗盘已收盘",
-    SecurityStatus.TO_BE_OPEN: "待开盘",
-    SecurityStatus.SUSPENDED: "停牌",
-    SecurityStatus.CALLED: "已收回",
-    SecurityStatus.EXPIRED_LAST_TRADING_DATE: "已过最后交易日",
-    SecurityStatus.EXPIRED: "已过期",
-    SecurityStatus.DELISTED: "已退市",
-    SecurityStatus.CHANGE_TO_TEMPORARY_CODE: "公司行动中，交易关闭，转至临时代码交易",
-    SecurityStatus.TEMPORARY_CODE_TRADE_END: "临时买卖结束，交易关闭",
-    SecurityStatus.CHANGED_PLATE_TRADE_END: "已转板，旧代码交易关闭",
-    SecurityStatus.CHANGED_CODE_TRADE_END: "已换代码，旧代码交易关闭",
-    SecurityStatus.RECOVERABLE_CIRCUIT_BREAKET: "可恢复性熔断",
-    SecurityStatus.UN_RECOVERABLE_CIRCUIT_BREAKER: "不可恢复性熔断",
-    SecurityStatus.AFTER_COMBINATION: "盘后撮合",
-    SecurityStatus.AFTER_TRANSATION: "盘后交易"
-}
+# SecurityStatus._descriptions = {
+#     SecurityStatus.NONE: "未知",
+#     SecurityStatus.NORMAL: "正常状态",
+#     SecurityStatus.LISTING: "待上市",
+#     SecurityStatus.PURCHASING: "申购中",
+#     SecurityStatus.SUBSCRIBING: "认购中",
+#     SecurityStatus.BEFORE_DRAK_TRADE_OPENING: "暗盘开盘前",
+#     SecurityStatus.DRAK_TRADING: "暗盘交易中",
+#     SecurityStatus.DRAK_TRADE_END: "暗盘已收盘",
+#     SecurityStatus.TO_BE_OPEN: "待开盘",
+#     SecurityStatus.SUSPENDED: "停牌",
+#     SecurityStatus.CALLED: "已收回",
+#     SecurityStatus.EXPIRED_LAST_TRADING_DATE: "已过最后交易日",
+#     SecurityStatus.EXPIRED: "已过期",
+#     SecurityStatus.DELISTED: "已退市",
+#     SecurityStatus.CHANGE_TO_TEMPORARY_CODE: "公司行动中，交易关闭，转至临时代码交易",
+#     SecurityStatus.TEMPORARY_CODE_TRADE_END: "临时买卖结束，交易关闭",
+#     SecurityStatus.CHANGED_PLATE_TRADE_END: "已转板，旧代码交易关闭",
+#     SecurityStatus.CHANGED_CODE_TRADE_END: "已换代码，旧代码交易关闭",
+#     SecurityStatus.RECOVERABLE_CIRCUIT_BREAKET: "可恢复性熔断",
+#     SecurityStatus.UN_RECOVERABLE_CIRCUIT_BREAKER: "不可恢复性熔断",
+#     SecurityStatus.AFTER_COMBINATION: "盘后撮合",
+#     SecurityStatus.AFTER_TRANSATION: "盘后交易"
+# }
+
 # 窝轮类型枚举类 WrtType
 class WrtType(IntEnum):
     """
@@ -268,6 +269,7 @@ class WrtType(IntEnum):
             return cls(value)
         except ValueError:
             return None
+
 
 # 窝轮价内/外状态枚举类
 class PriceType(IntEnum):
