@@ -26,11 +26,12 @@ class FutuMarket:
             quote_ctx = OpenQuoteContext(host=FUTU_OPEND_HOST, port=FUTU_OPEND_PORT)
             ret, data = quote_ctx.get_market_snapshot(stock_code_list)
             if ret == RET_OK:
+                print(data['code'][0])  # 取第一条的股票代码
+                print(data['code'].values.tolist())  # 转为 list
                 market_snapshot_list = []
                 for index, row in data.iterrows():
                     # 假设 MarketSnapShotModel 可以通过字典解包初始化
-                    snapshot = MarketSnapShotModel(**row.to_dict())
-                    market_snapshot_list.append(snapshot)
+                    market_snapshot_list.append(row)
                 return market_snapshot_list
             else:
                 logger.error(f'获取市场快照出错: {data}')
@@ -44,16 +45,16 @@ class FutuMarket:
 
 
 def main():
-    ticker = "03960.HK"
+    ticker = "HK.03690"
     try:
         # 调用 get_market_snapshot 函数获取市场快照
         market_snapshots = FutuMarket.get_market_snapshot([ticker])
 
         if market_snapshots:
-            logger.info(f"成功获取 {ticker} 的市场快照")
-            for snapshot in market_snapshots:
+            logger.info(f"成功获取 {ticker} 的市场快照 {len(market_snapshots)}")
+            # for snapshot in market_snapshots:
                 # 打印市场快照的信息，这里假设 MarketSnapShotModel 类有 __str__ 方法
-                logger.info(snapshot)
+                # logger.info(snapshot)
         else:
             logger.warning(f"未获取到 {ticker} 的市场快照")
     except Exception as e:

@@ -239,37 +239,6 @@ class WrtType(IntEnum):
     BEAR = 4
     INLINE = 5
 
-    # 类型描述映射
-    _descriptions = {
-        UNKNOWN: "未知",
-        CALL: "认购窝轮",
-        PUT: "认沽窝轮",
-        BULL: "牛证",
-        BEAR: "熊证",
-        INLINE: "界内证"
-    }
-
-    @property
-    def description(self) -> str:
-        """获取窝轮类型的中文描述"""
-        return self._descriptions.get(self, "未知类型")
-
-    @classmethod
-    def from_value(cls, value: int) -> Optional["WrtType"]:
-        """
-        根据整数值获取对应的窝轮类型枚举值
-
-        Args:
-            value: 窝轮类型的整数值
-
-        Returns:
-            对应的 WrtType 枚举值，若未找到则返回 None
-        """
-        try:
-            return cls(value)
-        except ValueError:
-            return None
-
 
 # 窝轮价内/外状态枚举类
 class PriceType(IntEnum):
@@ -280,51 +249,6 @@ class PriceType(IntEnum):
     OUTSIDE = 1
     WITH_IN = 2
 
-    # 状态描述映射（包含窝轮和界内证的不同含义）
-    _descriptions = {
-        UNKNOW: "未知",
-        OUTSIDE: {
-            "warrant": "价外",
-            "inline": "界外（界内证专用）"
-        },
-        WITH_IN: {
-            "warrant": "价内",
-            "inline": "界内（界内证专用）"
-        }
-    }
-
-    @property
-    def description(self) -> str:
-        """获取状态的中文描述（默认返回窝轮场景的描述）"""
-        return self._descriptions[self]["warrant"]
-
-    def get_description(self, wrt_type: str = "warrant") -> str:
-        """
-        获取指定窝轮类型的状态描述
-
-        Args:
-            wrt_type: 窝轮类型，可选 "warrant"（普通窝轮）或 "inline"（界内证）
-
-        Returns:
-            对应的中文描述，若类型不支持则返回默认描述
-        """
-        return self._descriptions[self].get(wrt_type, self.description)
-
-    @classmethod
-    def from_value(cls, value: int) -> Optional["PriceType"]:
-        """
-        根据整数值获取对应的价格状态枚举值
-
-        Args:
-            value: 价格状态的整数值
-
-        Returns:
-            对应的 PriceType 枚举值，若未找到则返回 None
-        """
-        try:
-            return cls(value)
-        except ValueError:
-            return None
 
 # 期权方向类型枚举类 OptionType
 class OptionType(IntEnum):
@@ -335,34 +259,15 @@ class OptionType(IntEnum):
     CALL = 1
     PUT = 2
 
-    # 类型描述映射
-    _descriptions = {
-        ALL: "所有期权",
-        CALL: "看涨期权（赋予买入标的资产的权利）",
-        CALL: "看涨期权（赋予买入标的资产的权利）",  # 修正重复键（实际应确保唯一）
-        PUT: "看跌期权（赋予卖出标的资产的权利）"
-    }
+    # # 类型描述映射
+    # _descriptions = {
+    #     ALL: "所有期权",
+    #     CALL: "看涨期权（赋予买入标的资产的权利）",
+    #     PUT: "看跌期权（赋予卖出标的资产的权利）"
+    # }
 
-    @property
-    def description(self) -> str:
-        """获取期权类型的中文描述"""
-        return self._descriptions.get(self, "未知类型")
 
-    @classmethod
-    def from_value(cls, value: int) -> Optional["OptionType"]:
-        """
-        根据整数值获取对应的期权类型枚举值
 
-        Args:
-            value: 期权类型的整数值
-
-        Returns:
-            对应的 OptionType 枚举值，若未找到则返回 None
-        """
-        try:
-            return cls(value)
-        except ValueError:
-            return None
 
 # 指数期权类型 IndexOptionType
 class IndexOptionType(IntEnum):

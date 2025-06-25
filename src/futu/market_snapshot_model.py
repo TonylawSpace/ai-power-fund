@@ -8,8 +8,10 @@ from src.futu.futu_enum_type import (
 ,WrtType            # 窝轮类型
 ,PriceType          # 窝轮价内/外
 ,SecurityStatus     # 股票状态
+,OptionType         # 期权类型（按方向）
+
 )
-  
+
 @dataclass
 class MarketSnapShotModel:
     """市场快照数据模型，表示金融产品的实时市场数据"""
