@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, Union
 from src.futu.futu_enum_type import (
@@ -13,7 +14,7 @@ from src.futu.futu_enum_type import (
 )
 
 @dataclass
-class MarketSnapShotModel:
+class MarketSnapShotModel(BaseModel):
     """市场快照数据模型，表示金融产品的实时市场数据"""
     
     # 基础信息
