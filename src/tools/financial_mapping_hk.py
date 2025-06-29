@@ -1,5 +1,5 @@
 
-# financial_mapping_03690.py
+# financial_mapping_hk.py
 STANDARD_MAPPING = {
     # 资产负债表映射
     "balance_sheet": {
@@ -161,6 +161,7 @@ METRICS_CALCULATION = {
         "source": "income_statement",
         "additional": "average_receivables requires two periods"
     },
+    # 资产周转率
     "asset_turnover": {
         "formula": "revenue / average_total_assets",
         "components": ["revenue"],

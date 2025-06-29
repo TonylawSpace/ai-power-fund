@@ -58,19 +58,11 @@ poetry add requests
 
 **原本版本的数据来源集： https://api.financialdatasets.ai**
 
-增加 金融数据源 Add financial data sources
+## 替代数据源
 
-```bash
-poetry add akshare yfinance
-```
+https://tushare.pro/  替换掉 https://api.financialdatasets.ai
 
-akshare接口教程  https://akshare.akfamily.xyz/data/stock/stock.html
-
-测试美股 蔚来NIO  阿里吧吧BABA
-
-yfinance 港股接口
-
-
+tushare 包含港股、A股
 
 ## 上市公司公告
 
@@ -128,10 +120,10 @@ sudo apt-get install libta-lib0-dev
 
 | **原函数**                | **港股适配方案**                                             |
 | :------------------------ | :----------------------------------------------------------- |
-| `get_prices()`            | 调用AKShare的 `stock_hk_daily()`，注意处理日期格式（YYYYMMDD） |
-| `get_financial_metrics()` | 使用AKShare的 `stock_hk_financial_report()` 提取财报指标     |
-| `get_market_cap()`        | 从AKShare的 `stock_hk_spot()` 实时数据中提取市值             |
-| `get_company_news()`      | 替换为eFin或富途的新闻API（AKShare无港股新闻）               |
+| `get_prices()`            | futu snapshot                                                |
+| `get_financial_metrics()` | futu stock_hk_financial_report()  提取财报指标               |
+| `get_market_cap()`        | stock_hk_spot() 实时数据中提取市值                           |
+| `get_company_news()`      | 替换为eFin或富途的新闻API                                    |
 | `get_insider_trades()`    | 港股无公开内幕交易数据，可注释此功能或改用大股东持股变动数据 |
 | 其他函数                  | 保持逻辑，仅替换数据源调用                                   |
 

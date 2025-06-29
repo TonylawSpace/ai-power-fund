@@ -13,7 +13,7 @@ from src.futu.futu_cache import get_futu_cache
 # 获取环境变量
 load_dotenv()
 ROOT = os.getenv("ROOT")
-JSON_DATA = f"{ROOT}/JsonDdata"
+JSON_DATA = f"{ROOT}/JsonData"
 os.makedirs(JSON_DATA, exist_ok=True)
 
 FUTU_OPEND_HOST = os.getenv("FUTU_OPEND_HOST", "127.0.0.1")
@@ -59,12 +59,41 @@ class FutuMarket:
                 quote_ctx.close()  # 结束后记得关闭当条连接，防止连接条数用尽
 
     @staticmethod
-    def get_market_snapshopt_stock_price(ticker:string):float
+    def get_market_snapshot_stock_price(ticker: str) -> float:
+        """
+        获取单只股票的最新价格
 
-        stock_code_list=[ticker]
-        if marketSnapShotList := get_market_snapshot(stock_code_list) :
-            market_snapshot = marketSnapShotList[0]
-            return market_snapshot["last_price"]
+        Args:
+            ticker: 股票代码，例如"HK.03690"
+
+        Returns:
+            股票的最新价格，如果获取失败则返回0.0
+        """
+        try:
+            # 调用已有方法获取市场快照
+            stock_code_list = [ticker]
+            market_snapshot_list = FutuMarket.get_market_snapshot(stock_code_list)
+
+            # 检查是否成功获取数据
+            if not market_snapshot_list:
+                logger.warning(f"无法获取股票 {ticker} 的市场快照数据")
+                return 0.0
+
+            # 获取第一个快照(因为只查询了一只股票)
+            market_snapshot = market_snapshot_list[0]
+
+            # 尝试获取最新价格，处理可能的属性访问问题
+            if hasattr(market_snapshot, 'last_price'):
+                return float(market_snapshot.last_price)
+            elif isinstance(market_snapshot, dict) and 'last_price' in market_snapshot:
+                return float(market_snapshot['last_price'])
+            else:
+                logger.warning(f"股票 {ticker} 的市场快照中不包含last_price字段")
+                return 0.0
+
+        except Exception as e:
+            logger.error(f"获取股票 {ticker} 价格时发生错误: {str(e)}", exc_info=True)
+            return 0.0
 
 
 
@@ -78,6 +107,8 @@ def main():
             # for snapshot in market_snapshots:
                 # 打印市场快照的信息，这里假设 MarketSnapShotModel 类有 __str__ 方法
                 # logger.info(snapshot)
+            ticker_price = FutuMarket.get_market_snapshot_stock_price(ticker)
+            logger.info(f'{ticker} = {ticker_price}')
         else:
             logger.warning(f"未获取到 {ticker} 的市场快照")
     except Exception as e:
@@ -86,18 +117,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-    quote_ctx = OpenQuoteContext(host='127.0.0.1', port=11111)
-
-    ret_sub, err_message = quote_ctx.subscribe(['HK.03690'], [SubType.QUOTE], subscribe_push=False)
-    # 先订阅 K 线类型。订阅成功后 OpenD 将持续收到服务器的推送，False 代表暂时不需要推送给脚本
-    if ret_sub == RET_OK:  # 订阅成功
-        ret, data = quote_ctx.get_stock_quote(['HK.03690'])  # 获取订阅股票报价的实时数据
-        if ret == RET_OK:
-            print(data)
-            print(data['code'][0])  # 取第一条的股票代码
-            print(data['code'].values.tolist())  # 转为 list
-        else:
-            print('error:', data)
-    else:
-        Logger(f'subscription failed: {err_message}')
-    quote_ctx.close()  # 关闭当条连接，OpenD 会在1分钟后自动取消相应股票相应类型的订阅

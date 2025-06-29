@@ -18,6 +18,8 @@ from data.models import (
     CompanyFactsResponse,
 )
 
+from src.tools.api_hk import api_hk  # Hong Kong Api Business
+
 # Global cache instance
 _cache = get_cache()
 
@@ -60,6 +62,14 @@ def get_financial_metrics(
         limit: int = 10,
 ) -> list[FinancialMetrics]:
     """Fetch financial metrics from cache or API."""
+
+    """ 如果是HK 港股的代码，在转入港股业务API计算并返回"""
+    if "HK" in ticker.upper():
+        # 执行相关操作
+        metrics = api_hk.get_financial_metrics_hk(ticker)
+        return metrics
+
+    """美股业务"""
     # Check cache first
     if cached_data := _cache.get_financial_metrics(ticker):
         # Filter cached data by date and limit
@@ -90,7 +100,56 @@ def get_financial_metrics(
     _cache.set_financial_metrics(ticker, [m.model_dump() for m in financial_metrics])
     return financial_metrics
 
+"""
+post 请求如下
+curl --request POST \
+  --url https://api.financialdatasets.ai/financials/search/line-items \
+  --header 'Content-Type: application/json' \
+  --header 'X-API-KEY: 8ae37190-b62f-4666-a8bc-cb8d4a7ca0d8' \
+  --data '{
+  "period": "ttm",
+  "limit": 1,
+  "line_items": [
+    "revenue",
+    "gross_profit"
+  ],
+  "tickers": [
+    "AAPL"
+  ]
+}'
+financialdatasets.ai 可提供的 line items 如下
+line_items = [
+    "consolidated_income",
+    "cost_of_revenue",
+    "dividends_per_common_share",
+    "earnings_per_share",
+    "earnings_per_share_diluted",
+    "ebit",
+    "ebit_usd",
+    "earnings_per_share_usd",
+    "gross_profit",
+    "income_tax_expense",
+    "interest_expense",
+    "net_income",
+    "net_income_common_stock",
+    "net_income_common_stock_usd",
+    "net_income_discontinued_operations",
+    "net_income_non_controlling_interests",
+    "operating_expense",
+    "operating_income",
+    "preferred_dividends_impact",
+    "research_and_development",
+    "revenue",
+    "revenue_usd",
+    "selling_general_and_administrative_expenses",
+    "weighted_average_shares",
+    "weighted_average_shares_diluted",
+]
 
+返回结果
+{"search_results": [{"ticker": "AAPL", "report_period": "2025-03-29", "period": "ttm", "currency": "USD", "gross_profit": 186699000000.0, "revenue": 400366000000.0}]}
+
+"""
 def search_line_items(
         ticker: str,
         line_items: list[str],

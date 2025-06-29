@@ -1,4 +1,4 @@
-# api_03690.py
+# api_hk.py
 import os
 import sys
 from dotenv import load_dotenv
@@ -6,7 +6,7 @@ import pandas as pd
 from typing import List
 from sqlalchemy.dialects.mysql import DATETIME
 from src.data.models import FinancialMetrics
-from src.tools.financial_mapping_03690 import (
+from src.tools.financial_mapping_hk import (
     STANDARD_MAPPING,
     METRICS_CALCULATION,
     REPORT_PERIOD_MAPPING,
@@ -14,6 +14,7 @@ from src.tools.financial_mapping_03690 import (
 )
 
 from src.tools.logger import logger
+from src.futu.futu_market import FutuMarket # futu api
 
 # 获取环境变量
 load_dotenv()
@@ -166,11 +167,14 @@ def calculate_derived_metrics(ticker: str,period_data: dict) -> dict:
     """
     metrics = {}
 
-
     try:
-        # 0. metrics['ticker'] = period_data['ticker']
+        stock_code_list = [ticker]
+        market_snapshot_list = FutuMarket.get_market_snapshot(stock_code_list)
+        market_snapshot_model = market_snapshot_list[0]
 
-        shares_outstanding = 6_280_000_000  # 美团2023年总股本约62.8亿股
+        # 0. metrics['ticker'] = period_data['ticker']
+        total_market_val = market_snapshot_model.total_market_val # 总市值
+        shares_outstanding = market_snapshot_model.outstanding_shares # 6_280_000_000  # 美团2023年总股本约62.8亿股
 
         # 1. 基本比率
         # 毛利率
@@ -289,6 +293,12 @@ def calculate_derived_metrics(ticker: str,period_data: dict) -> dict:
         if 'free_cash_flow' in metrics and 'market_cap' in period_data and period_data['market_cap'] != 0:
             metrics['free_cash_flow_yield'] = metrics['free_cash_flow'] / period_data['market_cap']
 
+        metrics['last_price'] = market_snapshot_model.last_price  # 最新价格
+        metrics['open_price'] = market_snapshot_model.open_price  # 今日开盘价
+        metrics['high_price'] = market_snapshot_model.high_price  # 最高价格
+        metrics['low_price'] = market_snapshot_model.low_price  # 最低价格
+        metrics['prev_close_price'] = market_snapshot_model.prev_close_price  # 昨收盘价格
+
         # 映射表没有的指标-------------------------------------------------------------------------------
         """
         book_value_growth
@@ -323,16 +333,18 @@ def calculate_derived_metrics(ticker: str,period_data: dict) -> dict:
         metrics['operating_cash_flow']=None
         metrics['operating_cycle']=None
         metrics['operating_income_growth']=None
-        metrics['peg_ratio']=None
+        metrics['peg_ratio']=None # pb_ratio
         metrics['payout_ratio']=None
-        metrics['price_to_book_ratio']=None
-        metrics['price_to_earnings_ratio']=None
+
+        # 净资产
+        metrics['price_to_book_ratio'] = market_snapshot_model.pb_ratio
+        metrics['price_to_earnings_ratio']= market_snapshot_model.pe_ratio
         metrics['price_to_sales_ratio']=None
         metrics['revenue_growth']=None
         metrics['working_capital_turnover']=None
-        metrics['market_cap']=12312312313
+        metrics['market_cap']= total_market_val
 
-        print(f"Ticker: {ticker} Market_Capital: { metrics['market_cap']}")
+        print(f"{market_snapshot_model.update_time} Ticker: {ticker} Market_Capital: { total_market_val} ")
 
         # 9. 确保所有模型字段都存在
         """
@@ -372,12 +384,12 @@ def get_report_period(date_str: str) -> str:
             return period_type
     return "other"
 
-def get_financial_metrics_hk(ticker: str = "03690.HK") -> List[FinancialMetrics]:
-    """从本地Excel文件获取美团(03690.HK)的完整财务指标"""
+def get_financial_metrics_hk(ticker: str = "HK.03690") -> List[FinancialMetrics]:
+    """从本地Excel文件获取美团(HK.03690)的完整财务指标"""
     # 创建ticker特定的数据目录
     ticker_data_dir = f"{DATA_SET_DIR}\\{ticker}"
     # logger.info(f"股票数据目录: {ticker_data_dir}")
-    print("=" * 80)
+    print("=" * 90)
     print("\n")
 
     # 构建文件路径
@@ -400,9 +412,9 @@ def get_financial_metrics_hk(ticker: str = "03690.HK") -> List[FinancialMetrics]
                 logger.error(f"目录不存在: {ticker_data_dir}")
             return []
 
-    # 表名 移除后缀 .HK
+    # 表名 移除前后缀 .HK
     sheet_name = ticker.removesuffix(".HK")
-
+    sheet_name = ticker.removeprefix("HK.")
     try:
         # 加载三大财务报表
         balance_sheet = load_excel(balance_sheet_path, sheet_name=sheet_name)
@@ -453,23 +465,28 @@ def get_financial_metrics_hk(ticker: str = "03690.HK") -> List[FinancialMetrics]
 # 使用示例
 if __name__ == "__main__":
 
-    logger.info("=" * 80)
+    logger.info("=" * 90)
     # 如果原始数据为非数字，导致结算结果就是非数字 表示为 NAN
     logger.info("开始获取美团财务指标...（如果原始数据为非数字，表示为 NAN）")
-    logger.info("=" * 80)
+    logger.info("=" * 90)
+
+    ticker = "HK.03690"
 
     try:
-        metrics = get_financial_metrics_hk("03690.HK")
+        metrics = get_financial_metrics_hk(ticker)
+        print("[BEGIN] FinancialMetrics","=" * 100,"\n")
+        print(metrics)
+        print("[END] FinancialMetrics", "=" * 100,"\n")
 
         if not metrics:
             print("\n [func::__main__] 未获取到财务数据，请检查文件路径和数据")
             sys.exit(1)
 
         # 只打印最近两个报告期的数据
-        for i, metric in enumerate(metrics[:2]):
-            print(f"\n{'=' * 80}")
+        for i, metric in enumerate(metrics):
+            print(f"\n{'=' * 90}")
 
-            print(f"{'=' * 80}")
+            print(f"{'=' * 90}")
 
             # 打印关键指标
             print("\n关键财务指标:")
@@ -484,11 +501,11 @@ if __name__ == "__main__":
             print(f"流动比率: {metric.current_ratio:.2f}" if metric.current_ratio is not None else "流动比率: NAN")
             print(f"速动比率: {metric.quick_ratio:.2f}" if metric.quick_ratio is not None else "速动比率: NAN")
 
-            print(f"\n{'=' * 80}\n")
+            print(f"\n{'=' * 90}\n")
 
-        print("=" * 80)
+        print("=" * 90)
         print("财务指标获取完成")
-        print("=" * 80)
+        print("=" * 90)
 
     except Exception as e:
         logger.error(f"主程序运行时出错: {str(e)}", exc_info=True)
